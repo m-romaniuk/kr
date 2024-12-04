@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean Words</title>
+</head>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100&display=swap" rel="stylesheet">
+<style>
+    body {
+        margin: auto;
+        overflow: hidden;
+
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+
+        font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 100;
+        font-style: normal;
+    }
+    #root {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        
+    }
+    p {
+        font-size:x-large;
+    }
+    span {
+        padding: 10px;
+    }
+    div.card {
+        display: flex;
+        flex-direction: column;
+
+        /* position: relative; */
+        margin: auto;
+        width: 75%;
+        overflow: hidden;
+    }
+    div.card p {
+        white-space: nowrap;
+    }
+    div.card p.ko {
+        background-color: #eee5;
+        font-size: 25vh;
+        text-align: center;
+        margin: 0;
+
+        font-family: "Gowun Batang", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
+    div.card p.en {
+        background-color: #ddd5;
+        font-size: 10vh;
+        text-align: center;
+        margin: 0;
+
+        /* font-family: "Montserrat", sans-serif;
+        font-optical-sizing: auto;
+        font-weight: 100;
+        font-style: normal; */
+    }
+    .fadedIn {
+        animation: fadeIn 1s;
+    }
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    .not-visible {
+        opacity: 0;
+    }
+    #content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        flex-grow: 1;
+    }
+    #bottomNav {
+        display: flex;
+        flex-direction: row;
+        width: 100vw;
+        justify-content: space-around;
+    }
+    #bottomNav div, #topNav div {
+        color: gray;
+        /* color: blueviolet; */
+        font-size: 7vh;
+        padding: 1rem;
+        /* border: 1px solid black; */
+        flex-grow: 1;
+        text-align: center;
+    }
+    #bottomNav div {
+        width: 50vw;
+    }
+</style>
+<body>
+    <div id="root">
+        <div id="topNav">
+            <div id="read"></div>
+        </div>
+        <div id="content">
+            <div id="card" class="card">
+                <p class="ko"></p>
+                <p class="en"></p>
+            </div>
+        </div>
+        <div id="bottomNav">
+            <div id="toggle"></div>
+            <div id="next">next</div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    //https://codepen.io/raresun-tutorials/full/OJzBPQm
+
+    let word = null;
+    let remainingWords = [];
+
+    const words = [
+        {
+            id: 1,
+            ko: "아버지",
+            en: "father",
+        },
+        {
+            ko: "어머니",
+            en: "mother",
+        },
+        {
+            ko: "이",
+            en: "teeth",
+        },
+        // {
+        //     ko: "이빨",
+        //     en: "tooth",
+        // },
+        {
+            ko: "아이",
+            en: "child",
+        },
+        {
+            ko: "오이",
+            en: "cucumber",
+        },
+        {
+            ko: "나무",
+            en: "tree",
+        },
+        {
+            ko: "고기",
+            en: "meat",
+        },
+        {
+            ko: ["소", "암소"],
+            en: "cow",
+        },
+        {
+            ko: "나이",
+            en: "age",
+        },
+        {
+            ko: "가수",
+            en: "singer",
+        },
+        {
+            ko: "우유",
+            en: "milk",
+        },
+        {
+            ko: ["여기", "여기요"],
+            en: "here",
+        },
+        {
+            ko: "야구",
+            en: "baseball",
+        },
+        {
+            ko: "아니요",
+            en: "no",
+        },
+        {
+            ko: "여우",
+            en: "fox",
+        },
+        {
+            ko: ["가다", "가기", "가요"],
+            en: "go",
+        },
+        {
+            ko: "머리",
+            en: "head, hair",
+        },
+        {
+            ko: "구두",
+            en: "shoes (elegant)",
+        },
+        {
+            ko: "지도",
+            en: "map",
+        },
+        {
+            ko: "바다",
+            en: "sea, ocean",
+        },
+        {
+            ko: "여성",
+            en: "woman",
+        },
+        {
+            ko: "물",
+            en: "water",
+        },
+        {
+            ko: "집",
+            en: "house",
+        },
+        {
+            ko: "미국",
+            en: "USA",
+        },
+
+        {
+            ko: ["남자", "남성"],
+            en: "man",
+        },
+        {
+            ko: "안경",
+            en: "eyeglasses",
+        },
+        {
+            ko: "옷",
+            en: "clothes",
+        },
+        {
+            ko: "노래",
+            en: "song",
+        },
+        {
+            ko: ["아내", "부인"],
+            en: "wife",
+        },
+        {
+            ko: "가게",
+            en: "store",
+        },
+        {
+            ko: "시계",
+            en: "clock",
+        },
+        {
+            ko: "",
+            en: "talk?",
+        },
+        {
+            ko: "이야기",
+            en: "story",
+        },
+        {
+            ko: "지하철",
+            en: "subway",
+        },
+        {
+            ko: "표",
+            en: "ticket",
+        },
+        {
+            ko: "코",
+            en: "nose",
+        },
+        {
+            ko: "한국",
+            en: "Korea",
+        },
+        {
+            ko: "주차장",
+            en: "parking lot",
+        },
+        {
+            ko: "국",
+            en: "soup",
+        },
+        {
+            ko: ["부엌", "주방"],
+            en: "kitchen",
+        },
+        {
+            ko: "빗",
+            en: "comb",
+        },
+        {
+            ko: "빛",
+            en: "ray of light",
+        },
+        {
+            ko: "월",
+            en: "month?",
+        },
+        {
+            ko: "잎",
+            en: "leaf",
+        },
+        {
+            ko: "사과",
+            en: "apple",
+        },
+        {
+            ko: "돼지",
+            en: "pig",
+        },
+        {
+            ko: "병원",
+            en: "hospital",
+        },
+        {
+            ko: "외국인",
+            en: "foreigner",
+        },
+        {
+            ko: "귀",
+            en: "ear",
+        },
+        {
+            ko: "의자",
+            en: "chair",
+        },
+        {
+            ko: "빵",
+            en: "bread",
+        },
+        {
+            ko: "어깨",
+            en: "shoulder",
+        },
+        {
+            ko: "땀",
+            en: "sweat",
+        },
+        {
+            ko: "토끼",
+            en: "rabbit",
+        },
+        {
+            ko: ["비싸요", "비싸게"],
+            en: "expensive",
+        },
+        {
+            ko: ["짠", "짜다", "짜요"],
+            en: "salty",
+        },
+        {
+            ko: ["밖", "밖의"],
+            en: "outside",
+        },
+        {
+            ko: "",
+            en: "gone, went",
+        },
+        {
+            ko: "닭",
+            en: "chicken",
+        },
+        {
+            ko: "값",
+            en: "price, value",
+        },
+        {
+            ko: "앉다",
+            en: "sit",
+        },
+        {
+            ko: "꽃",
+            en: "flower",
+        },
+        {
+            ko: "새",
+            en: "bird",
+        },
+        {
+            ko: "개",
+            en: "dog",
+        },
+        {
+            ko: "아기",
+            en: "baby?",
+        },
+        {
+            ko: "계란",
+            en: "egg",
+        },
+        {
+            ko: "책",
+            en: "book",
+        },
+        {
+            ko: "",
+            en: "table",
+        },
+        {
+            ko: "학생",
+            en: "student",
+        },
+        {
+            ko: "컴퓨터",
+            en: "computer",
+        },
+        {
+            ko: "텔레비전",
+            en: "television",
+        },
+        {
+            ko: "테니스",
+            en: "tennis",
+        },
+        {
+            ko: "자",
+            en: "ruler",
+        },
+        {
+            ko: "차",
+            en: "tea, car?",
+        },
+        {
+            ko: "발",
+            en: "foot",
+        },
+        {
+            ko: "팔",
+            en: "arm?",
+        },
+        {
+            ko: "기",
+            en: "energy (!)",
+        },
+        {
+            ko: "키",
+            en: "rudder?",
+        },
+        {
+            ko: "포도주",
+            en: "wine",
+        },
+        {
+            ko: "앞",
+            en: "front",
+        },
+        {
+            ko: "끝",
+            en: "end",
+        },
+        {
+            ko: "사랑",
+            en: "love",
+        },
+        {
+            ko: "사람",
+            en: "person",
+        },
+        {
+            ko: "커피",
+            en: "coffee",
+        },
+        {
+            ko: "코피",
+            en: "nose blood",
+        },
+        {
+            ko: "가방",
+            en: "bag?",
+        },
+        {
+            ko: "장미",
+            en: "rose",
+        },
+    ];
+
+    const days = [
+        {
+            ko: "월요일",
+            en: "monday",
+        },
+        {
+            ko: "화요일",
+            en: "tuesday",
+        },
+        {
+            ko: "수요일",
+            en: "wednesday",
+        },
+        {
+            ko: "목요일",
+            en: "thursday",
+        },
+        {
+            ko: "금요일",
+            en: "friday",
+        },
+        {
+            ko: "토요일",
+            en: "saturday",
+        },
+        {
+            ko: "일요일",
+            en: "sunday",
+        },
+        {
+            ko: "어제",
+            en: "yesterday",
+        },
+        {
+            ko: "내일",
+            en: "tomorrow",
+        },
+    ];
+    const months = [];
+    const numbers = [
+        {
+            ko: "이",
+            en: "two",
+        },        {
+            ko: "",
+            en: "eight",
+        },
+    ];
+    words.push(...days);
+    words.push(...months);
+    words.push(...numbers);
+
+
+    const DB = [
+    ];
+
+
+    async function play(lang, text) {
+        let retry = 3;
+        const src = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=${lang}&q=${text}`;
+        console.log(src);
+
+        audio.pause();
+        while (retry-- > 0) {
+            try {
+                audio.src = src;
+                await audio.play();
+                return;
+            } catch (err) {
+                console.warn(err);
+            }
+        }
+    }
+
+    const audio = document.createElement("audio");
+    // let audioLoaded = false;
+
+    const root = document.getElementById("root");
+
+    const read = document.getElementById("read");
+
+    const card = document.getElementById("card");
+    const ko = document.querySelector(".card p.ko");
+    const en = document.querySelector("p.en");
+
+    const toggle = document.getElementById("toggle");
+    const next = document.getElementById("next");
+
+    let readingOnLoad = false;
+    read.addEventListener("click", () => {
+        readingOnLoad = !readingOnLoad;
+        read.innerText = readingOnLoad ? "read on load" : "read on hover";
+        if (readingOnLoad) {
+        } else {
+        }
+    });
+    read.innerText = readingOnLoad ? "read on load" : "read on hover";
+
+    let translationVisible = false;
+    toggle.addEventListener("click", () => {
+        translationVisible = !translationVisible;
+        toggle.innerText = translationVisible ? "hide" : "show";
+        if (translationVisible) {
+            en.classList.remove("not-visible");
+        } else {
+            en.classList.add("not-visible");
+        }
+    });
+    toggle.innerText = translationVisible ? "hide" : "show";
+    if (translationVisible) {
+        en.classList.remove("not-visible");
+    } else {
+        en.classList.add("not-visible");
+    }
+
+    next.addEventListener("click", () => {
+        setRandomWord();
+    })
+
+    // ko.addEventListener("mouseover", async () => {
+    //     if (!readingOnLoad) {
+    //         play("ko", word.ko);
+    //     }
+    // });
+    ko.addEventListener("click", async () => {
+        play("ko", word.ko);
+    });
+    // en.addEventListener("mouseover", async () => {
+    //     if (!en.classList.contains("not-visible")) {
+    //         play("en", word.en);
+    //     }
+    // });
+
+    function setRandomWord() {
+        if (remainingWords.length === 0) {
+            words.forEach(w => remainingWords.push(w));
+        }
+
+        // get random
+        const max = remainingWords.length;
+        const index = Math.floor(Math.random() * max);
+        // get first
+        // const index = 0;
+
+        word = remainingWords.splice(index, 1)[0]; //remainingWords[index];
+
+        next.innerText = `next (${words.length-remainingWords.length}/${words.length})`;
+
+        // TODO: if worrd.ko is array, then show 1st word big and all the rest smaller
+        ko.innerText = word.ko;
+        en.innerText = word.en;
+
+        if (readingOnLoad) {
+            play("ko", word.ko);
+        }
+    }
+    setRandomWord();
+
+    // 2. list of all words at page
+
+    // function append(root, word) {
+    //     const ko = document.createElement("span")
+    //     ko.innerText = word.ko;
+    //     ko.addEventListener("mouseover", async () => { play("ko", word.ko); });
+    //     ko.addEventListener("click", async () => { play("ko", word.ko); });
+    //     // ko.addEventListener("touchstart", async () => { play("ko", word.ko); });
+
+    //     const en = document.createElement("span");
+    //     en.innerText = word.en;
+    //     en.addEventListener("mouseover", async () => { play("en", word.en); });
+
+    //     const row = document.createElement("p");
+    //     row.appendChild(ko);
+    //     row.appendChild(en);
+
+    //     root.appendChild(row);
+    // }
+    
+    // const list = document.createElement("div");
+    // root.appendChild(list);
+    // words.forEach(element => {
+    //     append(list, element);
+    // });
+</script>
